@@ -31,7 +31,7 @@ jobs:
         git config user.name "voidtrn"
         git config user.email "ktsr.andre@gmail.com"
         git add -A
-        git diff-index --quiet HEAD || (git commit -a -m "Automated preprocessing commit" --allow-empty)
+        git diff-index --quiet HEAD || (git commit -a -m "Output mlflow commit" --allow-empty)
     - name: Push Changes
       uses: ad-m/github-push-action@v0.6.0
       with:
