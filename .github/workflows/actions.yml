@@ -21,7 +21,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install mlflow pandas numpy scikit-learn
     - env:
-        MLFLOW_TRACKING_URI: file:${{ github.workspace }}/mlruns
+        MLFLOW_TRACKING_URI: sqlite:///mlflow.db
       run: |
           mkdir -p mlruns
           mlflow run MLProject --env-manager=local -P data_dir=MLProject/student-performance_preprocessing
