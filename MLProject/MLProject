@@ -1,0 +1,9 @@
+name: student-performance-ci-mlflow
+conda_env: conda.yaml
+entry_points:
+  main:
+    parameters:
+      data_dir: {type: path, default: "student-performance_preprocessing"}
+      target: {type: string, default: "G3"}
+      model: {type: string, default: "linear"}
+    command: "python modelling.py --data-dir {data_dir} --target {target} --model {model}"
