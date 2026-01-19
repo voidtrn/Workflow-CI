@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import argparse
 import mlflow
+import os
 
 def rmse(y_true, y_pred) -> float:
     return float(np.sqrt(mean_squared_error(y_true, y_pred)))
@@ -15,6 +16,12 @@ def main():
     parser.add_argument("--target", default="G3")
     parser.add_argument("--model", default="linear")
     args = parser.parse_args()
+
+    tracking_uri = os.getenv("MLFLOW_TRACKING_URI")
+    if tracking_uri:
+        mlflow.set_tracking_uri(tracking_uri)
+
+    os.environ.pop("MLFLOW_RUN_ID", None)
 
     data_dir = Path(args.data_dir)
     train_path = data_dir / "train_processed.csv"
