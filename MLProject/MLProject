@@ -5,5 +5,4 @@ entry_points:
     parameters:
       data_dir: {type: path, default: "student-performance_preprocessing"}
       target: {type: string, default: "G3"}
-      model: {type: string, default: "linear"}
-    command: "python modelling.py --data-dir {data_dir} --target {target} --model {model}"
+    command: "python modelling.py --data-dir {data_dir} --target {target}"

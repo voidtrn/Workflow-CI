@@ -1,6 +1,4 @@
-from matplotlib.pyplot import grid
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-from sklearn.model_selection import GridSearchCV, KFold
 from sklearn.linear_model import LinearRegression
 from pathlib import Path
 import pandas as pd
@@ -38,23 +36,22 @@ def main():
 
     model = LinearRegression()
 
-    with mlflow.start_run():
-        mlflow.log_param("target", args.target)
-        mlflow.log_param("model_type", "LinearRegression")
-        mlflow.log_param("n_train", X_train.shape[0])
-        mlflow.log_param("n_test", X_test.shape[0])
-        mlflow.log_param("n_features", X_train.shape[1])
+    mlflow.log_param("target", args.target)
+    mlflow.log_param("model_type", "LinearRegression")
+    mlflow.log_param("n_train", X_train.shape[0])
+    mlflow.log_param("n_test", X_test.shape[0])
+    mlflow.log_param("n_features", X_train.shape[1])
 
-        model.fit(X_train, y_train)
-        pred_test = model.predict(X_test)
+    model.fit(X_train, y_train)
+    pred_test = model.predict(X_test)
 
-        mlflow.log_metrics({
-            "test_mae": float(mean_absolute_error(y_test, pred_test)),
-            "test_rmse": rmse(y_test, pred_test),
-            "test_r2": float(r2_score(y_test, pred_test)),
-        })
+    mlflow.log_metrics({
+        "test_mae": float(mean_absolute_error(y_test, pred_test)),
+        "test_rmse": rmse(y_test, pred_test),
+        "test_r2": float(r2_score(y_test, pred_test)),
+    })
 
-        mlflow.sklearn.log_model(model, artifact_path="model")
+    mlflow.sklearn.log_model(model, artifact_path="model")
 
 
 if __name__ == "__main__":
