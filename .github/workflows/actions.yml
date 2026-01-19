@@ -22,4 +22,4 @@ jobs:
         pip install mlflow pandas numpy scikit-learn
     - name: Run MLflow Project
       run: |
-        mlflow run MLProject --env-manager=local -P data_dir=student-performance_preprocessing
+        mlflow run MLProject --env-manager=local -P data_dir=MLProject/student-performance_preprocessing
