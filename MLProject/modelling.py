@@ -59,8 +59,18 @@ def main():
             "test_r2": float(r2_score(y_test, pred_test)),
         })
 
-        mlflow.sklearn.log_model(model, artifact_path="model")
+        sample = test_df.copy()
+        sample[ "pred"] = pred_test
+        sample_out = Path("predictions_sample.csv")
+        sample.head(30).to_csv(sample_out, index=False)
+        mlflow.log_artifact(str(sample_out))
+        sample_out.unlink(missing_ok=True)
 
+        artifact_path = "model"
+        mlflow.sklearn.log_model(model, artifact_path=artifact_path)
+
+        model_uri = f"runs:/{mlflow.active_run().info.run_id}/{artifact_path}"
+        mlflow.register_model(model_uri, name=f"student_performance_linear_regression")
 
 if __name__ == "__main__":
     main()
