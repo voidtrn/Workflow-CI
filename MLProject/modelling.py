@@ -39,7 +39,7 @@ def main():
     y_test = test_df[args.target]
 
     mlflow.set_experiment("Student Performance CI")
-    mlflow.sklearn.autolog(silent=True)
+    mlflow.sklearn.autolog(log_input_examples=True, silent=True)
 
     model = LinearRegression()
 
