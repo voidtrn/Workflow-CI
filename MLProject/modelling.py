@@ -39,38 +39,29 @@ def main():
     y_test = test_df[args.target]
 
     mlflow.set_experiment("Student Performance CI")
-    mlflow.sklearn.autolog(log_input_examples=True, silent=True)
-
-    model = LinearRegression()
 
     with mlflow.start_run(run_name="linear_regression_train"):
-        mlflow.log_param("target", args.target)
-        mlflow.log_param("model_type", "LinearRegression")
-        mlflow.log_param("n_train", X_train.shape[0])
-        mlflow.log_param("n_test", X_test.shape[0])
-        mlflow.log_param("n_features", X_train.shape[1])
+        mlflow.autolog()
+
+        model = LinearRegression()
+        model.fit(X_train, y_train)
+        mlflow.sklearn.log_model(
+            sk_model=model,
+            artifact_path="model",
+            input_example=X_train.head(5),
+            registered_model_name="student_performance_linear_regression"
+        )
 
         model.fit(X_train, y_train)
+    
         pred_test = model.predict(X_test)
 
-        mlflow.log_metrics({
-            "test_mae": float(mean_absolute_error(y_test, pred_test)),
-            "test_rmse": rmse(y_test, pred_test),
-            "test_r2": float(r2_score(y_test, pred_test)),
-        })
-
-        sample = test_df.copy()
-        sample[ "pred"] = pred_test
-        sample_out = Path("predictions_sample.csv")
-        sample.head(30).to_csv(sample_out, index=False)
-        mlflow.log_artifact(str(sample_out))
-        sample_out.unlink(missing_ok=True)
-
-        artifact_path = "model"
-        mlflow.sklearn.log_model(model, artifact_path=artifact_path)
-
-        model_uri = f"runs:/{mlflow.active_run().info.run_id}/{artifact_path}"
-        mlflow.register_model(model_uri, name=f"student_performance_linear_regression")
+        metrics = {
+            "test_mean_squared_error": float(mean_absolute_error(y_test, pred_test)),
+            "test_mean_absolute_error": rmse(y_test, pred_test),
+            "test_r2_score": float(r2_score(y_test, pred_test)),
+        }
+        mlflow.log_metrics(metrics)
 
 if __name__ == "__main__":
     main()
