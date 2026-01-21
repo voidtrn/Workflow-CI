@@ -21,6 +21,11 @@ def main():
     if tracking_uri:
         mlflow.set_tracking_uri(tracking_uri)
 
+    # mlflow.set_tracking_uri("http://127.0.0.1:5000/")
+
+    # for k in ["MLFLOW_RUN_ID", "MLFLOW_EXPERIMENT_ID", "MLFLOW_ARTIFACT_URI"]:
+    #     os.environ.pop(k, None)
+
     os.environ.pop("MLFLOW_RUN_ID", None)
 
     data_dir = Path(args.data_dir)
@@ -38,7 +43,7 @@ def main():
     X_test = test_df.drop(columns=[args.target])
     y_test = test_df[args.target]
 
-    mlflow.set_experiment("Student Performance CI")
+    mlflow.set_experiment("Student Performance MAC")
 
     with mlflow.start_run(run_name="linear_regression_train"):
         mlflow.autolog()
@@ -52,8 +57,6 @@ def main():
             registered_model_name="student_performance_linear_regression"
         )
 
-        model.fit(X_train, y_train)
-    
         pred_test = model.predict(X_test)
 
         metrics = {
